@@ -2,6 +2,11 @@
 
 一个完整的财经新闻抓取、AI 分析、自动推送工具集。
 
+## 📋 系统要求
+
+- **Python 版本**: Python 3.9 或更高版本
+- **操作系统**: macOS, Linux, Windows
+
 ---
 
 ## 📁 项目结构
@@ -40,18 +45,56 @@ NEWS/
 
 ## 🚀 快速开始
 
-### 运行 Market Color 早报推送
+### 1. 安装依赖
+
+```bash
+# 克隆仓库
+git clone https://github.com/jasper-wutong/FetchNews.git
+cd FetchNews
+
+# 创建虚拟环境
+python3 -m venv .venv
+
+# 激活虚拟环境
+source .venv/bin/activate  # macOS/Linux
+# 或 .venv\Scripts\activate  # Windows
+
+# 安装依赖
+pip install -r requirements.txt
+
+# (可选) 安装 GitHub Copilot SDK (仅 daily_brief_copilot.py 需要)
+# cd ~/Desktop/VSCodePyScripts/TESTAI/copilot-sdk/python && pip install -e .
+```
+
+### 2. 配置环境变量
+
+创建 `.env` 文件：
+
+```bash
+GEMINI_API_KEY=你的_Gemini_API_Key
+```
+
+在 `daily_brief_*.py` 中配置 Bark 推送：
+
+```python
+BARK_KEY = "你的_Bark_Key"
+```
+
+### 3. 运行 Market Color 早报推送
 
 ```bash
 cd ~/Desktop/VSCodePyScripts/NEWS
 
+# 激活虚拟环境
+source .venv/bin/activate
+
 # Gemini 版本 (推荐，速度快)
-.venv/bin/python daily_brief_gemini.py
+python daily_brief_gemini.py
 # 或
 ./run_gemini.sh
 
 # Copilot SDK 版本
-.venv/bin/python daily_brief_copilot.py
+python daily_brief_copilot.py
 # 或
 ./run_copilot.sh
 ```
@@ -94,6 +137,11 @@ GEMINI_API_KEY=你的_Gemini_API_Key
 BARK_KEY = "你的_Bark_Key"
 ```
 
+### 获取 API Key
+
+- **Gemini API**: 访问 [Google AI Studio](https://aistudio.google.com/app/apikey) 获取免费 API Key
+- **Bark**: 在 iOS App Store 下载 Bark 应用获取推送 Key
+
 ---
 
 ## 📡 新闻源 API
@@ -101,25 +149,41 @@ BARK_KEY = "你的_Bark_Key"
 | 模块 | 数据源 | 说明 |
 |------|--------|------|
 | `fetch_10jqka.py` | 同花顺 | 7x24 快讯、要闻精选 |
+| `fetch_36kr.py` | 36氪 | 科技创投资讯 |
 | `fetch_WSJ.py` | 华尔街见闻 | 实时快讯、深度文章 |
+| `fetch_wallstreetcn.py` | 华尔街见闻 | 实时快讯 |
+| `fetch_baidu.py` | 百度热搜 | 热点新闻 |
+| `fetch_bilibili.py` | 哔哩哔哩 | 热门视频 |
+| `fetch_bloomberg.py` | Bloomberg | 国际财经 |
 | `fetch_caixin.py` | 财新网 | 财经新闻 |
 | `fetch_eastmoney.py` | 东方财富 | A股资讯 |
-| `fetch_bloomberg.py` | Bloomberg | 国际财经 |
-| `fetch_reuters.py` | 路透社 | 国际新闻 |
+| `fetch_github.py` | GitHub Trending | 开源项目动态 |
+| `fetch_ithome.py` | IT之家 | 科技新闻 |
+| `fetch_jin10.py` | 金十数据 | 财经快讯 |
+| `fetch_juejin.py` | 掘金 | 技术文章 |
 | `fetch_polymarket.py` | Polymarket | 预测市场数据 |
+| `fetch_reuters.py` | 路透社 | 国际新闻 |
+| `fetch_thepaper.py` | 澎湃新闻 | 时政新闻 |
+| `fetch_toutiao.py` | 今日头条 | 综合资讯 |
+| `fetch_v2ex.py` | V2EX | 技术社区热帖 |
+| `fetch_weibo.py` | 微博热搜 | 社交媒体热点 |
+| `fetch_zhihu.py` | 知乎热榜 | 问答社区热门 |
 
 ---
 
-## 🔧 依赖安装 (已预装在 .venv)
+## 🔧 依赖说明
 
-如需重新安装：
+本项目的依赖已在 `requirements.txt` 中定义，主要包括：
 
-```bash
-cd ~/Desktop/VSCodePyScripts/NEWS
-python3 -m venv .venv
-.venv/bin/pip install requests python-dotenv google-genai pydantic httpx[socks]
-.venv/bin/pip install -e ~/Desktop/VSCodePyScripts/TESTAI/copilot-sdk/python
-```
+- **requests**: HTTP 请求库
+- **beautifulsoup4**: HTML 解析
+- **pandas**: 数据处理
+- **python-dotenv**: 环境变量管理
+- **google-genai**: Google Gemini AI SDK
+- **pydantic**: 数据验证
+- **httpx**: 异步 HTTP 客户端
+
+完整依赖列表请查看 `requirements.txt`。
 
 ---
 
