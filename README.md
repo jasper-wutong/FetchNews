@@ -1,100 +1,159 @@
-# FetchNews - 新闻获取工具
+# NEWS - 智能财经新闻聚合与 Market Color 推送
 
-一个简单易用的新闻抓取工具集合，支持获取华尔街见闻等多个新闻源的最新资讯。
+一个完整的财经新闻抓取、AI 分析、自动推送工具集。
 
-## 项目结构
+---
+
+## 📁 项目结构
 
 ```
-News/
-├── test_WSJ.py          # 华尔街见闻新闻获取脚本（独立运行）
-└── newsnow/             # NewsNow 全栈新闻聚合平台（可选）
+NEWS/
+├── .venv/                      # Python 虚拟环境 (已配置所有依赖)
+├── .env                        # 环境变量 (GEMINI_API_KEY)
+│
+├── 📊 Market Color 早报推送
+│   ├── daily_brief_gemini.py   # Gemini AI 版本
+│   ├── daily_brief_copilot.py  # GitHub Copilot SDK 版本
+│   ├── run_gemini.sh           # 快捷运行脚本
+│   └── run_copilot.sh          # 快捷运行脚本
+│
+├── 📡 新闻数据源采集模块
+│   ├── fetch_10jqka.py         # 同花顺 7x24 快讯
+│   ├── fetch_WSJ.py            # 华尔街见闻 (wallstcn)
+│   ├── fetch_caixin.py         # 财新网
+│   ├── fetch_eastmoney.py      # 东方财富
+│   ├── fetch_bloomberg.py      # Bloomberg
+│   ├── fetch_reuters.py        # 路透社
+│   └── fetch_polymarket.py     # Polymarket 预测市场
+│
+├── 📈 数据文件
+│   ├── jesus_return_yes.xlsx
+│   ├── jesus_return_no.xlsx
+│   ├── orderbook_jesus_yes.xlsx
+│   └── trump_press_conf_history.xlsx
+│
+├── newsnow/                    # NewsNow 全栈新闻聚合平台 (可选)
+└── test_WSJ.py                 # 华尔街见闻测试脚本
 ```
 
-## 快速开始
+---
 
-### 方法一：使用 test_WSJ.py（推荐，简单快速）
+## 🚀 快速开始
 
-这是一个独立的Python脚本，无需复杂配置即可运行。
-
-#### 安装依赖
+### 运行 Market Color 早报推送
 
 ```bash
-pip install requests
+cd ~/Desktop/VSCodePyScripts/NEWS
+
+# Gemini 版本 (推荐，速度快)
+.venv/bin/python daily_brief_gemini.py
+# 或
+./run_gemini.sh
+
+# Copilot SDK 版本
+.venv/bin/python daily_brief_copilot.py
+# 或
+./run_copilot.sh
 ```
 
-#### 运行脚本
+### 功能流程
+
+```
+1. 📡 抓取新闻 (同花顺 + 华尔街见闻)
+       ↓
+2. 🧠 AI 分析生成 Market Color
+       ↓
+3. 📱 Bark 推送到手机
+```
+
+---
+
+## 📊 Market Color 输出格式
+
+AI 会生成包含以下结构的专业市场评论：
+
+- **【今日大势】** - 市场整体走势概述
+- **【核心逻辑】** - 驱动市场的关键因素
+- **【交易员备忘】** - 重点关注事项和风险提示
+
+---
+
+## ⚙️ 配置说明
+
+### 环境变量 (.env)
 
 ```bash
-python test_WSJ.py
+GEMINI_API_KEY=你的_Gemini_API_Key
 ```
 
-#### 功能特性
+### Bark 推送配置
 
-- ✅ **实时快讯** - 获取华尔街见闻最新财经资讯
-- ✅ **深度文章** - 获取详细的财经报道
-- ✅ **热门文章** - 获取当日热门新闻
-- ✅ **无需登录** - 直接调用公开API
-- ✅ **独立运行** - 可复制到任何文件夹使用
+在 `daily_brief_*.py` 中修改：
 
-### 方法二：使用 NewsNow 平台（功能更丰富）
+```python
+BARK_KEY = "你的_Bark_Key"
+```
 
-NewsNow 是一个功能完整的全栈新闻聚合平台，支持多个新闻源。
+---
 
-#### 前置要求
+## 📡 新闻源 API
 
-- Node.js 16+
-- pnpm
+| 模块 | 数据源 | 说明 |
+|------|--------|------|
+| `fetch_10jqka.py` | 同花顺 | 7x24 快讯、要闻精选 |
+| `fetch_WSJ.py` | 华尔街见闻 | 实时快讯、深度文章 |
+| `fetch_caixin.py` | 财新网 | 财经新闻 |
+| `fetch_eastmoney.py` | 东方财富 | A股资讯 |
+| `fetch_bloomberg.py` | Bloomberg | 国际财经 |
+| `fetch_reuters.py` | 路透社 | 国际新闻 |
+| `fetch_polymarket.py` | Polymarket | 预测市场数据 |
 
-#### 安装运行
+---
+
+## 🔧 依赖安装 (已预装在 .venv)
+
+如需重新安装：
 
 ```bash
-cd newsnow
-
-# 安装pnpm（如果未安装）
-npm install -g pnpm
-
-# 安装依赖
-pnpm install
-
-# 启动开发服务器
-pnpm dev
+cd ~/Desktop/VSCodePyScripts/NEWS
+python3 -m venv .venv
+.venv/bin/pip install requests python-dotenv google-genai pydantic httpx[socks]
+.venv/bin/pip install -e ~/Desktop/VSCodePyScripts/TESTAI/copilot-sdk/python
 ```
 
-访问 http://localhost:5173/ 查看应用
+---
 
-## API 说明
+## ⏰ 定时任务 (可选)
 
-### 华尔街见闻 API
+使用 crontab 设置每日自动推送：
 
-test_WSJ.py 使用的公开API接口：
+```bash
+# 编辑 crontab
+crontab -e
 
-- **实时快讯**: `https://api-one.wallstcn.com/apiv1/content/lives`
-- **新闻文章**: `https://api-one.wallstcn.com/apiv1/content/information-flow`
-- **热门文章**: `https://api-one.wallstcn.com/apiv1/content/articles/hot`
+# 每天早上 7:30 运行 Gemini 版本
+30 7 * * * cd ~/Desktop/VSCodePyScripts/NEWS && .venv/bin/python daily_brief_gemini.py
+```
 
-这些接口是华尔街见闻官方使用的公开接口，无需身份验证。
+⚠️ **注意**：Mac 休眠时定时任务不会运行。建议使用 Mac Mini 并设置永不休眠，或部署到云服务器。
 
-## 技术栈
+---
 
-### test_WSJ.py
-- Python 3.x
-- requests
+## 📝 版本对比
 
-### NewsNow
-- TypeScript
-- React
-- Vite
-- Nitro
-- UnoCSS
+| 特性 | Gemini 版本 | Copilot SDK 版本 |
+|------|-------------|------------------|
+| 速度 | ⚡ 快 | 中等 |
+| API Key | 需要 GEMINI_API_KEY | 使用 Copilot CLI 认证 |
+| 离线使用 | ❌ | ❌ |
+| 模型 | gemini-2.0-flash | gemini-3-flash (via Copilot) |
 
-## 许可证
-
-MIT
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
+---
 
 ## 作者
 
 Jasper Wu
+
+## 许可证
+
+MIT

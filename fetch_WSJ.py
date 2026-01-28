@@ -25,8 +25,12 @@ def get_live_news():
                 "id": item.get("id"),
                 "title": item.get("title") or item.get("content_text", ""),
                 "url": item.get("uri", ""),
-                "time": datetime.fromtimestamp(item.get("display_time", 0)).strftime("%Y-%m-%d %H:%M:%S")
+                "time": datetime.fromtimestamp(item.get("display_time", 0)).strftime("%Y-%m-%d %H:%M:%S"),
+                "digest": item.get("content_text", "")  # 提取快讯内容作为摘要
             }
+            # 如果标题和摘要一样（有些快讯没标题），则清空摘要，避免重复
+            if news["title"] == news["digest"]:
+                news["digest"] = ""
             news_list.append(news)
         
         return news_list
@@ -61,7 +65,8 @@ def get_articles():
                 "id": resource.get("id"),
                 "title": resource.get("title") or resource.get("content_short", ""),
                 "url": resource.get("uri", ""),
-                "time": datetime.fromtimestamp(resource.get("display_time", 0)).strftime("%Y-%m-%d %H:%M:%S")
+                "time": datetime.fromtimestamp(resource.get("display_time", 0)).strftime("%Y-%m-%d %H:%M:%S"),
+                "digest": resource.get("content_short", "")  # 提取文章摘要
             }
             news_list.append(news)
         
@@ -85,7 +90,8 @@ def get_hot_news():
             news = {
                 "id": item.get("id"),
                 "title": item.get("title", ""),
-                "url": item.get("uri", "")
+                "url": item.get("uri", ""),
+                "digest": item.get("content_short", "")
             }
             news_list.append(news)
         
@@ -107,6 +113,8 @@ def print_news(news_list, title):
     
     for i, news in enumerate(news_list, 1):
         print(f"\n{i}. {news['title']}")
+        if news.get('digest'):
+            print(f"   📝 摘要: {news['digest']}")
         if news.get('time'):
             print(f"   🕐 {news['time']}")
         if news.get('url'):
