@@ -18,6 +18,7 @@ sys.path.append(BASE_DIR)
 # 尝试导入
 try:
     from copilot import CopilotClient
+    from dotenv import load_dotenv
     import fetch_10jqka
     import fetch_WSJ
     import fetch_baidu
@@ -32,11 +33,15 @@ try:
     import fetch_juejin
 except ImportError as e:
     print(f"导入模块失败: {e}")
-    print("请确保已安装 copilot-sdk: cd ~/Desktop/VSCodePyScripts/TESTAI/copilot-sdk/python && pip install -e .")
+    print("请确保已安装 requirements.txt 依赖，并安装 copilot-sdk：")
+    print("cd ~/Desktop/VSCodePyScripts/TESTAI/copilot-sdk/python && pip install -e .")
     sys.exit(1)
 
+# 加载环境变量 (优先读取当前目录的 .env)
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
 # 配置
-BARK_KEY = "n7ga9gQ9xmUaogdtqXdpe9"
+BARK_KEY = os.getenv("BARK_KEY")
 
 async def get_copilot_analysis(raw_news_text):
     """调用 GitHub Copilot SDK 生成 Market Color"""
@@ -76,6 +81,10 @@ async def get_copilot_analysis(raw_news_text):
 
 def send_bark(title, content):
     """发送 Bark 通知"""
+    if not BARK_KEY:
+        print("⚠️  未设置 BARK_KEY，跳过 Bark 推送")
+        return False
+
     url = "https://api.day.app/push"
     payload = {
         "body": content,
@@ -86,10 +95,13 @@ def send_bark(title, content):
         "level": "active"
     }
     try:
-        requests.post(url, json=payload, timeout=10)
+        resp = requests.post(url, json=payload, timeout=10)
+        resp.raise_for_status()
         print("✅ 推送成功")
+        return True
     except Exception as e:
         print(f"❌ 推送失败: {e}")
+        return False
 
 def main():
     print("🚀 正在启动智能早报采集 (Copilot)...")

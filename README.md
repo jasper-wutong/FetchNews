@@ -14,7 +14,7 @@
 ```
 NEWS/
 ├── .venv/                      # Python 虚拟环境 (已配置所有依赖)
-├── .env                        # 环境变量 (GEMINI_API_KEY)
+├── .env                        # 环境变量 (GEMINI_API_KEY, BARK_KEY)
 │
 ├── 📊 Market Color 早报推送
 │   ├── daily_brief_gemini.py   # Gemini AI 版本
@@ -68,16 +68,11 @@ pip install -r requirements.txt
 
 ### 2. 配置环境变量
 
-创建 `.env` 文件：
+创建 `.env` 文件（可参考 `.env.example`）：
 
 ```bash
 GEMINI_API_KEY=你的_Gemini_API_Key
-```
-
-在 `daily_brief_*.py` 中配置 Bark 推送：
-
-```python
-BARK_KEY = "你的_Bark_Key"
+BARK_KEY=你的_Bark_Key
 ```
 
 ### 3. 运行 Market Color 早报推送
@@ -127,14 +122,7 @@ AI 会生成包含以下结构的专业市场评论：
 
 ```bash
 GEMINI_API_KEY=你的_Gemini_API_Key
-```
-
-### Bark 推送配置
-
-在 `daily_brief_*.py` 中修改：
-
-```python
-BARK_KEY = "你的_Bark_Key"
+BARK_KEY=你的_Bark_Key
 ```
 
 ### 获取 API Key

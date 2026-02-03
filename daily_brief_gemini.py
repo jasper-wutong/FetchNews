@@ -46,7 +46,7 @@ except ImportError as e:
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # 配置
-BARK_KEY = "n7ga9gQ9xmUaogdtqXdpe9"
+BARK_KEY = os.getenv("BARK_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 def get_gemini_analysis(raw_news_text):
@@ -80,6 +80,10 @@ def get_gemini_analysis(raw_news_text):
 
 def send_bark(title, content):
     """发送 Bark 通知"""
+    if not BARK_KEY:
+        print("⚠️  未设置 BARK_KEY，跳过 Bark 推送")
+        return False
+
     url = "https://api.day.app/push"
     payload = {
         "body": content,
@@ -90,10 +94,13 @@ def send_bark(title, content):
         "level": "active"
     }
     try:
-        requests.post(url, json=payload, timeout=10)
+        resp = requests.post(url, json=payload, timeout=10)
+        resp.raise_for_status()
         print("✅ 推送成功")
+        return True
     except Exception as e:
         print(f"❌ 推送失败: {e}")
+        return False
 
 def main():
     print("🚀 正在启动智能早报采集 (Gemini)...")

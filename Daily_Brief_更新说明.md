@@ -70,8 +70,10 @@
 ```bash
 cd ~/Desktop/VSCodePyScripts/NEWS
 
-# 确保已配置 GEMINI_API_KEY
-# 在 .env 文件中添加：GEMINI_API_KEY=your_key_here
+# 确保已配置 GEMINI_API_KEY / BARK_KEY
+# 在 .env 文件中添加（可参考 .env.example）：
+# GEMINI_API_KEY=your_key_here
+# BARK_KEY=your_bark_key_here
 
 python3 daily_brief_gemini.py
 ```
